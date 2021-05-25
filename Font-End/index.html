@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+		<title>Bureau des vols</title>
+		<link href="CSS/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-light text-dark">
+        <header>
+            <div class="bg-dark rounded m-2">
+                <h2 class="text-center text-light text-uppercase rounded align-self-center p-3">Bienvenue sur le site du bureau des vols</h2>
+                <h5 class="text-center text-light text-uppercase rounded align-self-center">A jour du : <span id="update"></span></h5>
+                <div class="row m-3">
+                    <span id="idetnSpan" class="col-md-4 fs-4 text-light text-bold"></span>
+                    <div class="col-md-6"></div>
+                    <button id="disconnect" type="button" class="col-md-2 btn btn-md btn-outline-warning mb-2">Déconnexion</button>
+                </div>
+            </div>
+            <div id="navbarNav" class="nav nav-tabs rounded bg-dark text-light justify-content-center mx-2">
+                <a class="nav-link text-uppercase active" href="#" data-link="flightSection">Nouveau</a>
+                <a class="nav-link text-uppercase " href="#" data-link="summary">Résumé</a>
+                <a class="nav-link text-uppercase " href="#" data-link="consultMyhours">Mes activités</a>
+                <a class="nav-link text-uppercase " href="#" data-link="validateFlight">Valider un vol</a>
+                <a class="nav-link text-uppercase " href="#" data-link="consultHours">Consulter les heures</a>
+                <a class="nav-link text-uppercase " href="#" data-link="consultQOG">QOG</a>
+                <a class="nav-link text-uppercase " href="#" data-link="modifyFlight">Modifier un vol</a>
+                <a class="nav-link text-uppercase " href="#" data-link="managedb">Gérer la base de données</a>
+                <a class="nav-link text-uppercase " href="#" data-link="stats">Statistiques</a>
+            </div>
+        </header>
+        <!-- <section id="loginSection">
+            <form class="m-3 mt-5">
+                <div class="row justify-content-center">
+                    <fieldset class="col-md-5 border border-dark shadow-lg rounded p-3">
+                        <legend class="text-center mb-3">Veuillez vous authentifier</legend>
+                        <div class="form-group row m-3">
+                            <label class="col-md-5 col-form-label fw-bold">Login :</label>
+                            <div class="col-md-7">
+                                <input id="login" class="form-control bg-dark text-center text-light" type="text" data-check data-type="text" data-valid="invalid">
+                            </div>
+                        </div>
+                        <div class="form-group row m-3">
+                            <label class="col-md-5 col-form-label fw-bold">Mot de passe :</label>
+                            <div class="col-md-7">
+                                <input id="password" class="form-control bg-dark text-center text-light" type="password" data-check data-type="password" data-valid="invalid">
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span id="error" class="text-center text-danger"></span>
+                        </div>
+                        <div id="checkLogin" class="form-group row m-3 justify-content-center">
+                            <button type="button" id="checkLoginButton" class="col-md-5 btn btn-primary rounded fw-bold mx-3">Connexion</button>
+                        </div>
+                        <div class="row text-center mt-3">
+                            <span class="fw-light text-dark">* Pour créer un compte contacter un responsable du BDV :</span>
+                            <div id="adminBDV"></div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </section> -->
+        <section id="flightSection" class="">
+            <div id="typeChoiceFormGroup" class="row justify-content-center">
+                <button type="button" id="flightTypeButton" class="col-md-2 btn btn-outline-primary bg-primary text-light rounded m-2 mx-3 fw-bold" data-validate>Nouveau vol</button>
+                <div class="col-md-4"></div>
+                <button type="button" id="SimpiTypeButton" class="col-md-2 btn btn-outline-primary rounded m-2 mx-3 fw-bold">Nouveau Simpil</button>
+            </div>
+            <form action="#" id="flightForm" class="row justify-content-center bg-light">
+                <div class="row mx-3">
+                    <div class="col-md-6">
+                        <fieldset id="flightTimingFieldset" class="border border-dark text-dark shadow-lg rounded p-1">
+                            <legend class="text-center fw-bold">Horaires en Zulu </legend>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Date du vol :</label>
+                                <div class="col-md-6">
+                                    <input id="date" class="form-control bg-dark text-center text-light is-invalid" type="date" data-check data-type="date" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Heure prévue de décollage :</label>
+                                <div class="col-md-6">
+                                    <input id="HPD" class="form-control bg-dark text-center text-light is-invalid" type="time" data-check data-type="time" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Décollage :</label>
+                                <div class="col-md-6">
+                                    <input id="takeoffTime" class="form-control bg-dark text-center text-light is-invalid" type="time" data-check data-type="time" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Durée :</label>
+                                <div class="col-md-3">
+                                    <input id="dayDuration" class="form-control bg-dark text-center text-light is-invalid" step="0.1" type="number" data-type="duration" placeholder="Jour..." data-valid="invalid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="nightDuration" class="form-control bg-dark text-center text-light is-invalid" step="0.1" type="number" data-type="duration" placeholder="Nuit..." data-valid="invalid" value="">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-6">
+                        <fieldset id="flightMissionFieldset" class="border border-dark text-dark shadow-lg rounded p-1">
+                            <legend class="text-center fw-bold">Mission</legend>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Appartenance :</label>
+                                <div class="col-md-6">
+                                    <select id="flightType" class="form-select bg-dark text-center text-light is-valid" data-valid="valid"><option selected>Vol 23F</option><option>Vol hors 23F</option></select>
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Mission :</label>
+                                <div class="col-md-6">
+                                    <input id="mission" class="form-control bg-dark text-center text-light is-invalid" type="text" data-check data-type="text" data-min="1" data-max="30" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Type :</label>
+                                <div class="col-md-6">
+                                    <select id="type" class="form-select bg-dark text-center text-light is-invalid" data-valid="invalid"><option selected>Choix...</option></select>
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Aéronef / Equipage :</label>
+                                <div class="col-md-3">
+                                    <input id="aircraftNumber" class="form-control bg-dark text-center text-light is-invalid" type="text" data-check data-type="aircraft" data-valid="invalid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="crew" class="form-control bg-dark text-center text-light is-invalid" type="text" data-check data-type="crew" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <fieldset id="flightDurationTypeFieldset" class="border border-dark text-dark shadow-lg rounded p-1">
+                            <legend class="text-center fw-bold">Régime de vol</legend>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">CAG IFR :</label>
+                                <div class="col-md-3">
+                                    <input id="CAGIFRDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CAGIFRNight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">CAG VFR :</label>
+                                <div class="col-md-3">
+                                    <input id="CAGVFRDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CAGVFRNight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">CAM T :</label>
+                                <div class="col-md-3">
+                                    <input id="CAMTDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CAMTNight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">CAM V :</label>
+                                <div class="col-md-3">
+                                    <input id="CAMVDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CAMVNight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">CAM I :</label>
+                                <div class="col-md-3">
+                                    <input id="CAMIDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CAMINight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-6">
+                        <fieldset id="flightPilotesFieldset" class="border border-dark text-dark shadow-lg rounded p-1" data-pilot="pilot">
+                            <legend class="text-center fw-bold">Heures par pilote</legend>
+                            <div class="form-group row my-1">
+                                <label class="col-md-2 col-form-label fw-bold">CDA :</label>
+                                <div class="col-md-3">
+                                    <select id="CDAName" class="form-select bg-dark text-center text-light is-invalid" data-valid="invalid"><option selected>Choix...</option></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CDADay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="CDANight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row my-1">
+                                <label class="col-md-2 col-form-label fw-bold">Pilote :</label>
+                                <div class="col-md-3">
+                                    <select id="PiloteName" class="form-select bg-dark text-center text-light is-invalid" data-valid="invalid"><option selected>Choix...</option></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="PiloteDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Jour..." data-valid="valid" value="">
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="PiloteNight" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="night" placeholder="Nuit..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div id="insertPilotFormGroup" class="form-group row m-3 justify-content-center">
+                                <button type="button" id="insertNewPiloteButton" class="col-md-5 btn btn-primary rounded fw-bold mx-3">Insérer un nouveau pilote</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </form>
+            <form action="#" id="newSimpilForm" class="d-none">
+                <div class="row mx-1">
+                    <div class="col-md-6">
+                        <fieldset id="newSimpilFieldset" class="bg-light border border-dark text-dark shadow-lg rounded p-2">
+                            <legend class="text-center fw-bold">Horaires</legend>
+                            <div id="newSimpilDateFormGroup" class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Date du SIMPIL :</label>
+                                <div class="col-md-6">
+                                    <input id="newSimpilDate" class="form-control bg-dark text-center text-light is-invalid" type="date" data-check data-type="date" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                            <div id="newSimpilMissionFormGroup" class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Mission :</label>
+                                <div class="col-md-6">
+                                    <input id="newSimpilMission" class="form-control bg-dark text-center text-light is-invalid" type="text" data-check data-type="text" data-min="1" data-max="30" data-valid="invalid" value="">
+                                </div>
+                            </div>
+                            <div id="newSimpilDurationFormGroup" class="form-group row m-1">
+                                <label class="col-md-6 col-form-label fw-bold">Durée :</label>
+                                <div class="col-md-6">
+                                    <input id="newSimpilDuration" class="form-control bg-dark text-center text-light is-invalid" step="0.1" type="number" data-check data-type="number" data-min="0.1" data-max="5" placeholder="Durée..." data-valid="invalid" value="">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-6">
+                        <fieldset id="newSimpilPilotesFieldset" class="bg-light border border-dark text-dark shadow-lg rounded p-2" data-pilot="pilot">
+                            <legend class="text-center fw-bold">Heures par pilote</legend>
+                            <div id="newSimpilCDAFormGroup" class="form-group row m-1">
+                                <label class="col-md-2 col-form-label fw-bold">CDA :</label>
+                                <div class="col-md-5">
+                                    <select id="newSimpilCDAName" class="form-select bg-dark text-center text-light is-invalid" data-valid="invalid"><option selected>Choix...</option></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input id="newSimpilCDADay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Durée..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div id="newSimpilPiloteFormGroup" class="form-group row m-1">
+                                <label class="col-md-2 col-form-label fw-bold">Pilote :</label>
+                                <div class="col-md-5">
+                                    <select id="newSimpilPiloteName" class="form-select bg-dark text-center text-light is-invalid" data-valid="invalid"><option selected>Choix...</option></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input id="newSimpilPiloteDay" class="form-control bg-dark text-center text-light is-valid" step="0.1" type="number" data-durationType="day" placeholder="Durée..." data-valid="valid" value="">
+                                </div>
+                            </div>
+                            <div id="newSimpilFormButton" class="form-group row m-3 justify-content-center">
+                                <button type="button" id="insertNewPiloteButtonSimpil" class="col-md-5 btn btn-primary rounded fw-bold mx-3">Insérer un nouveau pilote</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </form>
+            <div id="newFlightButtonForm" class="row col-md-12 justify-content-center">
+                <button type="button" id="newFlightButton" class="col-md-7 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold" disabled data-validate>Enregistrer ce vol</button>
+            </div>
+            <div id="newSimpilButtonForm" class="row col-md-12 justify-content-center d-none">
+                <button type="button" id="newSimpilButton" class="col-md-7 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold" disabled data-validate>Enregistrer ce SIMPIL</button>
+            </div>
+            <form action="#" id="bdvForm" class="d-none">
+                <div class="row mx-3">
+                    <fieldset class="bg-warning border border-dark text-dark shadow-lg rounded p-2">
+                        <legend class="text-center fw-bold">A remplir par le BDV</legend>
+                        <div class="form-group row m-1">
+                            <label class="col-md-2 col-form-label fw-bold">Groupe : </label>
+                            <div class="col-md-2">
+                                <select id="Group" class="form-select bg-dark text-center text-light" data-valid="valid"></select>
+                            </div>
+                            <label class="col-md-2 col-form-label fw-bold">Client : </label>
+                            <div class="col-md-2">
+                                <select id="Client" class="form-select bg-dark text-center text-light" data-valid="valid"></select>
+                            </div>
+                            <label class="col-md-2 col-form-label fw-bold">Gest : </label>
+                            <div class="col-md-2">
+                                <select id="Manager" class="form-select bg-dark text-center text-light" data-valid="valid"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row m-1">
+                            <label class="col-md-2 col-form-label fw-bold">Effectué : </label>
+                            <div class="col-md-2">
+                                <select id="Done" class="form-select bg-dark text-center text-light" data-valid="valid"><option>ME</option><option>MPE</option><option>MNE</option></select>
+                            </div>
+                            <label class="col-md-2 col-form-label fw-bold">Cause : </label>
+                            <div class="col-md-2">
+                                <select id="Cause" class="form-select bg-dark text-center text-light" disabled data-valid="valid"><option>TECH</option><option>MTO</option><option>OPS</option><option>REPROG</option></select>
+                            </div>
+                            <label class="col-md-2 col-form-label fw-bold">Zone : </label>
+                            <div class="col-md-2">
+                                <select id="area" class="form-select bg-dark text-center text-light" data-valid="valid"></select>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+            <div id="validateButtonsForm" class="row col-md-12 justify-content-center d-none">
+                <button type="button" id="validateFlightButton" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold" data-validate>Valider ce vol</button>
+                <button type="button" id="validateFlightReturnButton" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+            </div>
+            <div id="modifybuttonForm" class="row col-md-12 justify-content-center d-none">
+                <button type="button" id="modifyFlightButton" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold" data-validate>Modifier ce vol</button>
+                <button type="button" id="mnodifyFlightReturnButton" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+            </div>
+        </section>
+        <section id="summary" class="d-none">
+            <table id="summaryTable" class="table table-sm table-light rounded text-center mt-1">
+                <colgroup>
+                    <col style="width: 7%;">
+                    <col style="width: 9%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                </colgroup>
+                <thead class="justify-content-center align-middle">
+                    <tr>
+                        <th rowspan="2">Equipage</th>
+                        <th rowspan="2">Nom</th>
+                        <th rowspan="2">Norme</th>
+                        <th colspan="3">Heures de vol</th>
+                        <th colspan="2">Heures de SIMPIL</th>
+                        <th colspan="2">6 derniers mois</th>
+                        <th colspan="2">12 derniers mois</th>
+                        <th colspan="2">A faire ce mois</th>
+                        <th rowspan="2">dernier vol</th>
+                        <th rowspan="2">dernier SIMPIL</th>
+                    </tr>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Nuit</th>
+                        <th>Total</th>
+                        <th>Total</th>
+                        <th>Nuit</th>
+                        <th>Total</th>
+                        <th>Nuit</th>
+                        <th>Total</th>
+                        <th>Nuit</th>
+                        <th>Total</th>
+                        <th>Nuit</th>
+                    </tr>
+                </thead>
+                <tbody id="summarytbody" class="justify-content-center align-middle"></tbody>
+            </table>
+        </section>
+        <section id="consultMyhours" class="d-none">
+            <div class="row">
+                <form action="#" id="consultMyHoursForm">
+                    <div class="row mx-3 my-2 justify-content-center">
+                        <fieldset class="row border border-dark bg-secondary rounded p-1 justify-content-center">
+                            <div class="col-auto form-group row m-1">
+                                <label class="col-auto col-form-label fw-bold">Date de début :</label>
+                                <div class="col-auto">
+                                    <input id="startDate" class="form-control bg-dark text-center text-light is-valid" type="date" data-check data-type="date" data-valid="valid">
+                                </div>
+                            </div>
+                            <div class="col-auto form-group row m-1">
+                                <label class="col-auto col-form-label fw-bold">Date de fin :</label>
+                                <div class="col-auto">
+                                    <input id="endDdate" class="form-control bg-dark text-center text-light is-valid" type="date" data-check data-type="date" data-valid="valid">
+                                </div>
+                            </div>
+                            <div class="col-3 form-group row m-1">
+                                <button type="button" id="DisplayMyHoursButton" class="col-12 btn btn-primary rounded fw-bold mx-3" disabled>Afficher</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+            <div class="row justify-content-center mx-3">
+                <h4 id="noActivities" class="text-danger text-center"></h4>
+                <table id="consultmyHoursTable" class="table table-sm table-striped table-hover table-light rounded text-center">
+                    <thead class="justify-content-center align-middle">
+                        <tr>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Avion</th>
+                            <th>Fonction</th>
+                            <th>Equipage</th>
+                            <th>Mission</th>
+                            <th>Jour</th>
+                            <th>Nuit</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consultMyHoursTBody"></tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="5"></th>
+                            <th>Total vols : </th>
+                            <th id="consultMyHoursFlightSumDay"></th>
+                            <th id="consultMyHoursFlightSumNight"></th>
+                            <th id="consultMyHoursFlightSumTotal"></th>
+                        </tr>
+                        <tr>
+                            <th colspan="5"></th>
+                            <th>Total SIMPIL : </th>
+                            <th id="consultMyHoursSimpilSumDay"></th>
+                            <th id="consultMyHoursSimpilSumNight"></th>
+                            <th id="consultMyHoursSimpilSumTotal"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+        <section id="validateFlight" class="d-none">
+            <div id="validateNewFlightTable" class="row m-3">
+                <h4 id="noFlightToValidate" class="text-danger text-center"></h4>
+                <table class="table table-md table-hover table-secondary rounded table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>CDA</th>
+                            <th>Aéronef</th>
+                            <th>Equipage</th>
+                            <th>Mission</th>
+                            <th>Jour</th>
+                            <th>Nuit</th>
+                            <th>Total</th>
+                            <th>Valider</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="flightToValidate"></tbody>
+                </table>
+            </div>
+            <div id="validateFlightAuth" class="text-center d-none">
+                <span class="text-danger h4">Vous n'êtes pas autorisé à valider un vol</span>
+            </div>
+        </section>
+        <section id="consultHours" class="d-none">
+            <div class="row">
+                <form id="consultValidateFlightsForm">
+                    <div class="row mx-3 my-2 justify-content-center">
+                        <fieldset class="row bg-secondary rounded p-1 justify-content-center">
+                            <div class="col-auto form-group row m-1">
+                                <label class="col-auto col-form-label fw-bold">Date de début :</label>
+                                <div class="col-auto">
+                                    <input id="ValidateFlightsstartDate" class="form-control bg-dark text-center text-light is-valid" type="date" data-check data-type="date" data-valid="valid">
+                                </div>
+                            </div>
+                            <div class="col-auto form-group row m-1">
+                                <label class="col-auto col-form-label fw-bold">Date de fin :</label>
+                                <div class="col-auto">
+                                    <input id="ValidateFlightsendDdate" class="form-control bg-dark text-center text-light is-valid" type="date" data-check data-type="date" data-valid="valid">
+                                </div>
+                            </div>
+                            <div class="col-3 form-group row m-1">
+                                <button id="DisplayValidateFlightsButton" class="col-12 btn btn-primary rounded fw-bold mx-3" disabled>Afficher</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+            <div class="row justify-content-center mx-3">
+                <h4 id="noFlightValidated" class="text-danger text-center"></h4>
+                <table id="consultValidateFlightsTable" class="table table-sm table-hover table-secondary table-striped rounded text-center">
+                    <thead class="justify-content-center align-middle">
+                        <tr>
+                            <th>Date</th>
+                            <th>Avion</th>
+                            <th>CDA</th>
+                            <th>Equipage</th>
+                            <th>Mission</th>
+                            <th>Effectué</th>
+                            <th>Cause</th>
+                            <th>Groupe</th>
+                            <th>Client</th>
+                            <th>Gest</th>
+                            <th>Jour</th>
+                            <th>Nuit</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consultValidateFlightsTBody"></tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="9"></th>
+                            <th>Total : </th>
+                            <th id="consultValidateFlightsFlightSumDay"></th>
+                            <th id="consultValidateFlightsFlightSumNight"></th>
+                            <th id="consultValidateFlightsFlightSumTotal"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div id="ConsultHoursAuth" class="text-center d-none">
+                <span class="text-danger h4">Vous n'êtes pas autorisé à consulter les heures</span>
+            </div>
+        </section>
+        <section id="consultQOG" class="d-none">
+            <table id="QOGTable" class="table table-sm table-striped table-bordered table-light rounded text-center align-middle mt-1">
+                <colgroup>
+                    <col style="width: 4%;">
+                    <col style="width: 4%;">
+                    <col style="width: 30%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 6%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 3%;">
+                    <col style="width: 4%;">
+                    <col style="width: 4%;">
+                </colgroup>
+                <thead class="justify-content-center align-middle">
+                    <tr>
+                        <th colspan="2">Groupe</th>
+                        <th>Rubrique</th>
+                        <th>Gest</th>
+                        <th>Client</th>
+                        <th>Alloc</th>
+                        <th>Janv</th>
+                        <th>Fév</th>
+                        <th>Mars</th>
+                        <th>Avr</th>
+                        <th>Mai</th>
+                        <th>Juin</th>
+                        <th>Juil</th>
+                        <th>Août</th>
+                        <th>Sept</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Déc</th>
+                        <th>Total</th>
+                        <th>Restants</th>
+                    </tr>
+                </thead>
+                <tbody id="QOGTBody"></tbody>
+                <tfoot id="QOGTFoot"></tfoot>
+            </table>
+            <div id="ConsultQOGAuth" class="text-center d-none">
+                <span class="text-danger h4">Vous n'êtes pas autorisé à consulter la QOG</span>
+            </div>
+        </section>
+        <section id="modifyFlight" class="d-none">
+            <div class="row">
+                <form id="consultAllFlightssForm">
+                    <div class="row mx-3 my-2 justify-content-center">
+                        <fieldset class="row bg-secondary rounded p-1 justify-content-center">
+                            <div class="col-auto form-group row m-1">
+                                <label class="col-auto col-form-label fw-bold">Date de début :</label>
+                                <div class="col-auto">
+                                    <input id="AllFlightssstartDate" class="form-control bg-dark text-center text-light is-valid" type="date" data-check data-type="date" data-valid="valid">
+                                </div>
+                            </div>
+                            <div class="col-auto form-group row m-1">
+                                <label class="col-auto col-form-label fw-bold">Date de fin :</label>
+                                <div class="col-auto">
+                                    <input id="AllFlightssendDdate" class="form-control bg-dark text-center text-light is-valid" type="date" data-check data-type="date" data-valid="valid">
+                                </div>
+                            </div>
+                            <div class="col-3 form-group row m-1">
+                                <button id="DisplayAllFlightssButton" class="col-12 btn btn-primary rounded fw-bold mx-3" disabled>Afficher</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+            <div class="row justify-content-center mx-3">
+                <h4 id="noFlightToModify" class="text-danger text-center"></h4>
+                <table id="consultAllFlightssTable" class="table table-sm table-hover table-secondary table-striped rounded text-center">
+                    <thead class="justify-content-center align-middle">
+                        <tr>
+                            <th>Date</th>
+                            <th>Avion</th>
+                            <th>CDA</th>
+                            <th>Equipage</th>
+                            <th>Mission</th>
+                            <th>Effectué</th>
+                            <th>Cause</th>
+                            <th>Groupe</th>
+                            <th>Client</th>
+                            <th>Gest</th>
+                            <th>Jour</th>
+                            <th>Nuit</th>
+                            <th>Total</th>
+                            <th>Modifier</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consultAllFlightssTBody"></tbody>
+                </table>
+            </div>
+            <div id="ModifyFlightAuth" class="text-center d-none">
+                <span class="text-danger h4">Vous n'êtes pas autorisé à modifier un vol</span>
+            </div>
+        </section>
+        <div id="enteredFlightToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Votre vol a bien été enregistré
+            </div>
+        </div>
+        <div id="enteredSimpilToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Votre simpil a bien été enregistré
+            </div>
+        </div>
+        <div id="validatedFlightToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Votre vol a bien été validé
+            </div>
+        </div>
+        <div id="modifiedFlightToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Votre vol a bien été modifié
+            </div>
+        </div>
+        <div id="deletedFlightToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Votre vol a bien été supprimé
+            </div>
+        </div>
+        <div id="UpdatedPilotsToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Les pilotes ont bien été mis à jour
+            </div>
+        </div>
+        <div id="UpdatedNormsToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Les Normes ont bien été mises à jour
+            </div>
+        </div>
+        <div id="UpdatedTypesToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Les Types de vol ont bien été mis à jour
+            </div>
+        </div>
+        <div id="UpdatedAreasToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Les Zones de vol ont bien été mises à jour
+            </div>
+        </div>
+        <div id="UpdatedGroupsToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Les Groupes ont bien été mis à jour
+            </div>
+        </div>
+        <div id="addNewUserToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Nouvel utilisateur ajouté
+            </div>
+        </div>
+        <div id="deleteUserToast" class="toast position-absolute top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-dark">
+                <strong class="me-auto">Bureau des vols</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                 Utilisateur supprimé
+            </div>
+        </div>
+        <div class="modal fade" id="exerciceModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadTransitModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-secondary text-dark">
+					<div class="modal-header">
+						<h5 class="modal-title" id="loadTransitModalLabel"><img class="align-top" src="images/warning.png" alt="" width="25" height="25"><span class="text-warning"> Veuillez préciser dans quel cadre se trouvait ce vol </span><img class="align-top" src="images/warning.png" alt="" width="25" height="25"></h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold">Cadre : </label>
+							<div class="col-md-7">
+								<select class="form-select bg-dark rounded text-light text-center" id="context"></select>
+							</div>
+						</div>	
+					</div>
+					<div class="modal-footer">
+                        <button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+                        <button id="validateModal" type="button" class="shadow-lg btn btn-primary">Valider</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div class="modal fade" id="newUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadTransitModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-secondary text-dark">
+					<div class="modal-header">
+						<h5 class="modal-title" id="loadTransitModalLabel"><span class="text-warning">Création d'un nouvel utilisateur</span></h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group row m-1">
+							<label class="col-md-5 col-form-label fw-bold">Grade : </label>
+							<div class="col-md-7">
+								<select class="form-select bg-dark rounded text-light text-center is-valid" id="newRank">
+                                    <option>MOT</option>
+                                    <option>QM2</option>
+                                    <option>QM1</option>
+                                    <option>SM</option>
+                                    <option>MT</option>
+                                    <option>PM</option>
+                                    <option>MP</option>
+                                    <option>MJR</option>
+                                    <option>EV2</option>
+                                    <option>EV1</option>
+                                    <option>LV</option>
+                                    <option>CC</option>
+                                    <option>CF</option>
+                                    <option>CV</option>
+                                </select>
+							</div>
+						</div>
+                        <div class="form-group row m-1">
+							<label class="col-md-5 col-form-label fw-bold">Nom : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center is-invalid" id="newName" type="text" data-type="text" data-max="30" data-min="1">
+							</div>
+						</div>
+						<div class="form-group row m-1">
+							<label class="col-md-5 col-form-label fw-bold">login : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center is-invalid" id="newLogin" type="text" data-type="text" data-max="30" data-min="1">
+							</div>
+						</div>
+                        <div class="form-group row m-1">
+							<label class="col-md-5 col-form-label fw-bold">Mot de passe : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center is-invalid" id="newPassword" type="password" data-type="password" placeholder="Au moins 8 caractères...">
+							</div>
+						</div>
+                        <div class="form-group row m-1">
+							<label class="col-md-5 col-form-label fw-bold">Confirmez le mot de passe : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center is-invalid" id="confirmPassword" type="password" data-type="password">
+							</div>
+						</div>
+                        <div class="form-group row m-1">
+							<label class="col-md-5 col-form-label fw-bold">Fonction : </label>
+							<div class="col-md-7">
+								<select class="form-select bg-dark rounded text-light text-center is-valid" id="newFunction"><option>Pilote</option><option>Membre du BDV</option><option>Admin</option></select>
+							</div>
+						</div>	
+					</div>
+					<div class="modal-footer">
+                        <button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+                        <button id="addNewUserButton" type="button" class="shadow-lg btn btn-primary" disabled>Ajouter</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div class="modal fade" id="deleteUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadTransitModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-secondary text-dark">
+					<div class="modal-header">
+						<h5 class="modal-title" id="loadTransitModalLabel"><img class="align-top" src="images/warning.png" alt="" width="25" height="25"><span class="text-warning"> Vous êtes sur le point de supprimer cet utilisateur de la base de données </span><img class="align-top" src="images/warning.png" alt="" width="25" height="25"></h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold">Grade : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center" id="deleteRank">
+							</div>
+						</div>
+                        <div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold">Nom : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center" id="deleteName">
+							</div>
+						</div>
+                        <div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold">Fonction : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark rounded text-light text-center" id="deleteFunction">
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+                        <button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+                        <button id="deleteModalButton" type="button" class="shadow-lg btn btn-primary">Confirmer</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <section id="managedb" class="d-none">
+            <div id="cards" class="d-none">
+                <div class="row m-2">
+                    <div class="card col-md-3 p-0">
+                        <div class="card-header text-center">
+                            <span class="fs-5 fw-bold">Les pilotes</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Nom :</li>
+                                <li class="list-group-item">Norme :</li>
+                                <li class="list-group-item">Appartenance :</li>
+                                <li class="list-group-item">Equipage :</li>
+                            </ul>
+                            <div class="row justify-content-center">
+                                <button id="displayPilotsDiv" type="button" class="col-md-6 btn btn-primary text-center">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-3 p-0">
+                        <div class="card-header text-center">
+                            <span class="fs-5 fw-bold">Les normes</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Norme :</li>
+                                <li class="list-group-item">Heures à faire de jour :</li>
+                                <li class="list-group-item">Heures à faire de nuit :</li>
+                                <li class="list-group-item">Durée :</li>
+                            </ul>
+                            <div class="row justify-content-center">
+                                <button id="displayNormsDiv" type="button" class="col-md-6 btn btn-primary text-center">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-3 p-0">
+                        <div class="card-header text-center">
+                            <span class="fs-5 fw-bold">Les utilisateurs</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Nom :</li>
+                                <li class="list-group-item">Mot de passe :</li>
+                                <li class="list-group-item">Fonction :</li>
+                                <li class="list-group-item">Accès :</li>
+                            </ul>
+                            <div class="row justify-content-center">
+                                <button id="displayUsersDiv" type="button" class="col-md-6 btn btn-primary text-center">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-3 p-0">
+                        <div class="card-header text-center">
+                            <span class="fs-5 fw-bold">Les groupes de vol</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Groupe :</li>
+                                <li class="list-group-item">Sous-groupe :</li>
+                                <li class="list-group-item">Client :</li>
+                                <li class="list-group-item">Gest :</li>
+                            </ul>
+                            <div class="row justify-content-center">
+                                <button id="displayGroupsDiv" type="button" class="col-md-6 btn btn-primary text-center">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="card col-md-3 p-0">
+                        <div class="card-header text-center">
+                            <span class="fs-5 fw-bold">Les types de vol</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Nom :</li>
+                            </ul>
+                            <div class="row justify-content-center">
+                                <button id="displayTypesDiv" type="button" class="col-md-6 btn btn-primary text-center">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-3 p-0">
+                        <div class="card-header text-center">
+                            <span class="fs-5 fw-bold">Les zones de vol</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Nom :</li>
+                            </ul>
+                            <div class="row justify-content-center">
+                                <button id="displayAreasDiv" type="button" class="col-md-6 btn btn-primary text-center">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ModifyDBAuth" class="text-center d-none">
+                <span class="text-danger h4">Vous n'êtes pas autorisé à modifier la base de donnnées</span>
+            </div>
+            <div id="dbForms" class="d-none">
+                <div id="pilotsDiv" class="d-none">
+                    <table id="pilotsTable" class="table table-sm table-light rounded text-center align-middle mt-1">
+                        <colgroup>
+                            <col style="width: 30%;">
+                            <col style="width: 14%;">
+                            <col style="width: 14%;">
+                            <col style="width: 14%;">
+                            <col style="width: 14%;">
+                            <col style="width: 14%;">
+                        </colgroup>
+                        <thead class="justify-content-center align-middle">
+                            <tr>
+                                <th>Nom</th>
+                                <th>Norme</th>
+                                <th>Appartenance</th>
+                                <th>Equipage</th>
+                                <th>Ajouter</th>
+                                <th>Supprimer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pilotsTbody"></tbody>
+                        <tfoot id="pilotsTfoot"></tfoot>
+                    </table>
+                    <div class="row justify-content-center">
+                        <button id="pilModifyButton" type="button" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold">Modifier</button>
+                        <button id="pilReturnButton" type="button" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+                    </div>
+                </div>
+                <div id="normsDiv" class="d-none">
+                    <table id="normsTable" class="table table-sm table-light rounded text-center align-middle mt-1">
+                        <colgroup>
+                            <col style="width: 26%;">
+                            <col style="width: 14%;">
+                            <col style="width: 14%;">
+                            <col style="width: 14%;">
+                            <col style="width: 16%;">
+                            <col style="width: 16%;">
+                        </colgroup>
+                        <thead class="justify-content-center align-middle">
+                            <tr>
+                                <th>Nom</th>
+                                <th>Heure totale à faire</th>
+                                <th>Heures de nuit à faire</th>
+                                <th>Durée ( en mois )</th>
+                                <th>Ajouter</th>
+                                <th>Supprimer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="normsTbody"></tbody>
+                        <tfoot id="normTfoot"></tfoot>
+                    </table>
+                    <div class="row justify-content-center">
+                        <button id="normModifyButton" type="button" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold">Modifier</button>
+                        <button id="normReturnButton" type="button" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+                    </div>
+                </div>
+                <div id="usersDiv" class="d-none">
+                    <table id="usersTable" class="table table-sm table-light rounded text-center align-middle mt-1">
+                        <colgroup>
+                            <col style="width: 33%;">
+                            <col style="width: 33%;">
+                            <col style="width: 33%;">
+                        </colgroup>
+                        <thead class="justify-content-center align-middle">
+                            <tr>
+                                <th>Nom</th>
+                                <th>Fonction</th>
+                                <th>Supprimer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTbody"></tbody>
+                        <tfoot id="userTfoot"></tfoot>
+                    </table>
+                    <div class="row justify-content-center">
+                        <button id="userModifyButton" type="button" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold">Ajouter un nouvel utilisateur</button>
+                        <button id="userReturnButton" type="button" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+                    </div>
+                </div>
+                <div id="groupsDiv" class="d-none">
+                    <table id="groupsTable" class="table table-sm table-light rounded text-center align-middle mt-1">
+                        <colgroup>
+                            <col style="width: 6%;">
+                            <col style="width: 7%;">
+                            <col style="width: 28%;">
+                            <col style="width: 18%;">
+                            <col style="width: 9%;">
+                            <col style="width: 9%;">
+                            <col style="width: 7%;">
+                            <col style="width: 8%;">
+                            <col style="width: 8%;">
+                        </colgroup>
+                        <thead class="justify-content-center align-middle">
+                            <tr>
+                                <th>Groupe</th>
+                                <th>Sous-groupe</th>
+                                <th>Intitulé</th>
+                                <th>Context</th>
+                                <th>Client</th>
+                                <th>Gestionnaire</th>
+                                <th>allocation</th>
+                                <th>Ajouter</th>
+                                <th>Supprimer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="groupsTbody"></tbody>
+                        <tfoot id="groupsTfoot"></tfoot>
+                    </table>
+                    <div id="spinner" class="d-flex justify-content-center d-none">
+                        <div class="spinner-border text-primary mx-3" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="text-primary fs-4 fw-bold">CHARGEMENT DE LA BASE DE DONNEES EN COURS...</span>
+                      </div>
+                    <div class="row justify-content-center">
+                        <button id="groupsModifyButton" type="button" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold">Modifier</button>
+                        <button id="groupsReturnButton" type="button" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+                    </div>
+                </div>
+                <div id="typeDiv" class="d-none">
+                    <table id="typesTable" class="table table-sm table-light rounded text-center align-middle mt-1">
+                        <colgroup>
+                            <col style="width: 34%;">
+                            <col style="width: 33%;">
+                            <col style="width: 33%;">
+                        </colgroup>
+                        <thead class="justify-content-center align-middle">
+                            <tr>
+                                <th>Type de vol</th>
+                                <th>Ajouter</th>
+                                <th>Supprimer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="typesTbody"></tbody>
+                        <tfoot id="typeTfoot"></tfoot>
+                    </table>
+                    <div class="row justify-content-center">
+                        <button id="typeModifyButton" type="button" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold">Modifier</button>
+                        <button id="typeReturnButton" type="button" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+                    </div>
+                </div>
+                <div id="areaDiv" class="d-none">
+                    <table id="areasTable" class="table table-sm table-light rounded text-center align-middle mt-1">
+                        <colgroup>
+                            <col style="width: 34%;">
+                            <col style="width: 33%;">
+                            <col style="width: 33%;">
+                        </colgroup>
+                        <thead class="justify-content-center align-middle">
+                            <tr>
+                                <th>Zone de vol</th>
+                                <th>Ajouter</th>
+                                <th>Supprimer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="areasTbody"></tbody>
+                        <tfoot id="areasTfoot"></tfoot>
+                    </table>
+                    <div class="row justify-content-center">
+                        <button id="areasModifyButton" type="button" class="col-md-4 btn btn-lg btn-primary rounded m-2 mx-4 fw-bold">Modifier</button>
+                        <button id="areasReturnButton" type="button" class="col-md-4 btn btn-lg btn-danger rounded m-2 mx-4 fw-bold">Retour</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="stats" class="d-none">
+            <div id="statsCards">
+                <div class="row">
+                    <div class="card col-md-2">
+                        <img src="./images/bar.png" class="card-img-top" height="180" alt="...">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Répartition par types</h5>
+                            <p class="card-text" style="height:7rem;">Affiche la répartition des heures de vols par type sur l'année en cours</p>
+                            <div class="row justify-content-center">
+                                <button id="displayTypeStatsButton" type="button" class="col-md-6 btn btn-primary text-center">Afficher</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-2">
+                        <img src="./images/bar.png" class="card-img-top" height="180" alt="...">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Répartition par zones</h5>
+                            <p class="card-text" style="height:7rem;">Affiche la répartition des heures de vols par zones sur l'année en cours</p>
+                            <div class="row justify-content-center">
+                                <button id="displayAreaStatsButton" type="button" class="col-md-6 btn btn-primary text-center">Afficher</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-2">
+                        <img src="./images/bar.png" class="card-img-top" height="180" alt="...">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Répartition par équipage</h5>
+                            <p class="card-text" style="height:7rem;">Affiche la répartition des heures de vols par équipage sur l'année en cours</p>
+                            <div class="row justify-content-center">
+                                <button id="displayCrewStatsButton" type="button" class="col-md-6 btn btn-primary text-center">Afficher</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-2">
+                        <img src="./images/bar.png" class="card-img-top" height="180" alt="...">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Pourcentage de vols annulés</h5>
+                            <p class="card-text" style="height:7rem;">Affiche le pourcentage de vols annulés par mois</p>
+                            <div class="row justify-content-center">
+                                <button id="displayCancelStatsButton" type="button" class="col-md-6 btn btn-primary text-center">Afficher</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-2">
+                        <img src="./images/bar.png" class="card-img-top" height="180" alt="...">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Moyenne de retard par mois</h5>
+                            <p class="card-text" style="height:7rem;">Affiche la moyenne de retard au décollage par mois</p>
+                            <div class="row justify-content-center">
+                                <button id="displayDelayStatsButton" type="button" class="col-md-6 btn btn-primary text-center">Afficher</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-2">
+                        <img src="./images/line.png" class="card-img-top" height="180" alt="...">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Heures de vol par mois</h5>
+                            <p class="card-text" style="height:7rem;">Affiche les heures de vols cumulées par mois et la QOG</p>
+                            <div class="row justify-content-center">
+                                <button id="displayQOGStatsButton" type="button" class="col-md-6 btn btn-primary text-center">Afficher</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="chartStats" class="d-none">
+                <div id="typeChart">
+                    <div class="row" style="width: 900px; margin:auto;">
+                        <canvas id="myTypeChart"></canvas>
+                    </div>
+                    <div class="row justify-content-center mt-3">
+                        <button id="returnTypeChartButton" type="button" class="col-md-6 btn btn-md btn-danger rounded text-center">Retour</button>
+                    </div>
+                </div>
+                <div id="areaChart" class="d-none">
+                    <div class="row" style="width: 900px; margin:auto;">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                    <div class="row justify-content-center mt-3">
+                        <button id="returnAreaChartButton" type="button" class="col-md-6 btn btn-md btn-danger rounded text-center">Retour</button>
+                    </div>
+                </div>
+                <div id="crewChart" class="d-none">
+                    <div class="row" style="width: 900px; margin:auto;">
+                        <canvas id="myCrewChart"></canvas>
+                    </div>
+                    <div class="row justify-content-center mt-3">
+                        <button id="returnCrewChartButton" type="button" class="col-md-6 btn btn-md btn-danger rounded text-center">Retour</button>
+                    </div>
+                </div>
+                <div id="cancelChart" class="d-none">
+                    <div class="row" style="width: 900px; margin:auto;">
+                        <canvas id="myCancelChart"></canvas>
+                    </div>
+                    <div class="row justify-content-center mt-3">
+                        <button id="returnCancelChartButton" type="button" class="col-md-6 btn btn-md btn-danger rounded text-center">Retour</button>
+                    </div>
+                </div>
+                <div id="delayChart" class="d-none">
+                    <div class="row" style="width: 900px; margin:auto;">
+                        <canvas id="myDelayChart"></canvas>
+                    </div>
+                    <div class="row justify-content-center mt-3">
+                        <button id="returnDelayChartButton" type="button" class="col-md-6 btn btn-md btn-danger rounded text-center">Retour</button>
+                    </div>
+                </div>
+                <div id="QOGChart" class="d-none">
+                    <div class="row" style="width: 900px; margin:auto;">
+                        <canvas id="myQOGChart"></canvas>
+                    </div>
+                    <div class="row justify-content-center mt-3">
+                        <button id="returnQOGChartButton" type="button" class="col-md-6 btn btn-md btn-danger rounded text-center">Retour</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script src="Javascript/jquery.js"></script>
+		<script src="Javascript/bootstrap.bundle.min.js"></script>
+		<script src="Javascript/jquery-ui.js"></script>
+		<script src="Javascript/tools.js"></script>
+		<script src="Javascript/manageForm.js"></script>
+		<script src="Javascript/summary.js"></script>
+		<script src="Javascript/consultMyActivities.js"></script>
+		<script src="Javascript/validateFlight.js"></script>
+		<script src="Javascript/consultValidatedFlight.js"></script>
+		<script src="Javascript/modifyValidatedFlight.js"></script>
+		<script src="Javascript/consultQOG.js"></script>
+		<script src="Javascript/managePilotDb.js"></script>
+		<script src="Javascript/manageNormDB.js"></script>
+		<script src="Javascript/manageTypeDB.js"></script>
+		<script src="Javascript/manageAreasDB.js"></script>
+		<script src="Javascript/manageGroupsDB.js"></script>
+		<script src="Javascript/manageUserDb.js"></script>
+        <script src="Javascript/authentification.js"></script>
+        <script src="Javascript/chart.js"></script>
+        <script src="Javascript/stats.js"></script>
+    </body>
+</html>
